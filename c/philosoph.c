@@ -1,8 +1,5 @@
-#include <pthread.h>                   // message a arthur, ceci est la version qui block car ces idiots de philosophes prenent stupidement la fourchette gauche en premier
-#include <stdio.h>                     // CEPENDANT, je finirais demain, je sais comment faire (j'espere) mais j'ai faim
-#include <stdlib.h>                    // normalement ici soit t'as eu de la chance et le code finit, soit ils tiennent tous la baguette gauche comme des clochards
-#include <stdbool.h>                   // une grande partie c'est des exemples des slides du cours 6, zou-bi
-#include <unistd.h>
+#include "header/philosophe.h"
+
 
 #define PHILOSOPHES 3                    // nombre de philosophe
 
@@ -33,7 +30,9 @@ void* philosopheNStartCycle(void* n){    // le philosophe N va exécuter 25 cycl
         printf("Philosophe [%d] a libéré baguette gauche [%d]\n",*id,left);
         pthread_mutex_unlock(&baguette[right]);                                 // repose la baguette de droite
         printf("Philosophe [%d] a libéré baguette droite [%d]\n",*id,right);
+
     }
+    return (void*) NULL;
 }
 
 int main(int argc, const char* argv[]) { // argv[0] = ./comp,  argv[1] = nombre de philosophe (pas encore implémenté)
