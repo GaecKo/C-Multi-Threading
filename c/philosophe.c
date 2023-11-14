@@ -50,6 +50,7 @@ void* philosopheNStartCycle(void* n){
             printf("Philosophe [%d] a libéré baguette left [%d]\n",*id,left);
         } 
     }
+    return (void *) NULL;
 }
 
 int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
@@ -62,6 +63,8 @@ int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
 
     // allocates memory for philosophers and forks
     phil = (pthread_t *) malloc(PHILOSOPHES * sizeof(pthread_t));
+
+    
 
     if (PHILOSOPHES > 1) {
         baguette = (pthread_mutex_t *) malloc(PHILOSOPHES * sizeof(pthread_mutex_t));
