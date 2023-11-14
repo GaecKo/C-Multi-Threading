@@ -22,12 +22,9 @@ Pour lancer le code, il faut simplement entrer `make`. Les trois fichiers `c` se
         |- lect_writer.h
 | 
 |data/  # csv folder (retrieved data)
-    |- t2.csv
-    |- t4.csv
-    |- t8.csv
-    |- t16.csv
-    |- t32.csv
-    |- t64.csv
+    |- philosophe.csv
+    |- prod-conso.csv
+    |- lect-writer.csv
 |
 ```
 
