@@ -2,10 +2,11 @@
 
 // Global Var
 int PHILOSOPHES;                        // number of philosopher
+int FORKS;                              // number of fork
 
 pthread_t* phil;                        // array of philosopher (array of threads)
 pthread_mutex_t* baguette;              // array of fork (array of mutex)
-int* Id;                                // array of fork id (id of mutex)
+int* Id;                                // array of fork's id (id of mutex)
 
 void mange(int id) {}//printf("Philosophe [%d] mange\n",id);} // eat during 0 second
 
@@ -16,79 +17,53 @@ void* philosopheNStartCycle(void* n) {
         if (PHILOSOPHES == 1) right = 1;
         else right = (left + 1) % PHILOSOPHES;
               
-    for ( size_t i = 0; i < 10000000; i++) {                                       
-        //printf("Philosophe [%d] pense\n",*id);   // think
+    for ( size_t i = 0; i < 10000000; i++) {       
 
-        if (left < right) {
-            pthread_mutex_lock(&baguette[left]);   // take left fork
-            //printf("Philosophe [%d] possède baguette gauche [%d]\n",*id,left);
+        int indexFirst = (left < right)? left : right;   // index of first fork caught
+        int indexSecond = (left < right)? right : left;  // index of second fork caught
 
-            pthread_mutex_lock(&baguette[right]);    // take right fork
-            //printf("Philosophe [%d] possède baguette droite [%d]\n",*id,right);
+        pthread_mutex_lock(&baguette[indexFirst]);  
 
-            mange(*id);      // eat
+        pthread_mutex_lock(&baguette[indexSecond]); 
 
-            pthread_mutex_unlock(&baguette[left]);   // drop left fork
-            //printf("Philosophe [%d] a libéré baguette gauche [%d]\n",*id,left);
+        mange(*id);      // eat
 
-            pthread_mutex_unlock(&baguette[right]); // drop right fork
-            //printf("Philosophe [%d] a libéré baguette droite [%d]\n",*id,right);
+        pthread_mutex_unlock(&baguette[indexFirst]);   
 
-        } else {
-            pthread_mutex_lock(&baguette[right]);   // take left fork
-            //printf("Philosophe [%d] possède baguette droite [%d]\n",*id,right);
-
-            pthread_mutex_lock(&baguette[left]);  // take right fork
-            //printf("Philosophe [%d] possède baguette gauche [%d]\n",*id,left);
-
-            mange(*id);          // eat
-
-            pthread_mutex_unlock(&baguette[right]);   // drop left fork
-            //printf("Philosophe [%d] a libéré baguette right [%d]\n",*id,right);
-
-            pthread_mutex_unlock(&baguette[left]);   // drop right fork
-            //printf("Philosophe [%d] a libéré baguette left [%d]\n",*id,left);
-        } 
+        pthread_mutex_unlock(&baguette[indexSecond]); 
+        
     }
     return (void *) NULL;
 }
 
-
 int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
     int err;
 
-    if (argc == 2) 
+    if (argc == 2){
         PHILOSOPHES = atoi(argv[1]);
-    else 
-        return -1;     // define number of philosophers
+    }
+    else return -1;     // define number of philosophers
+
+    FORKS = (PHILOSOPHES == 1)? 2:PHILOSOPHES;
 
     // allocates memory for philosophers and forks
     phil = (pthread_t *) malloc(PHILOSOPHES * sizeof(pthread_t));
 
+    baguette = (pthread_mutex_t *) malloc(FORKS * sizeof(pthread_mutex_t));
+    Id = (int *) malloc(FORKS * sizeof(int));
     
-
-    if (PHILOSOPHES > 1) {
-        baguette = (pthread_mutex_t *) malloc(PHILOSOPHES * sizeof(pthread_mutex_t));
-        Id = (int *) malloc(PHILOSOPHES * sizeof(int));
-    }
-    else {  // 1 philosopher => 2 forks
-        baguette = (pthread_mutex_t *) malloc((PHILOSOPHES+1) * sizeof(pthread_mutex_t));
-        Id = (int *) malloc((PHILOSOPHES+1) * sizeof(int));
-    }
-
     // init
     for (size_t i = 0; i < PHILOSOPHES; i++) {
 
-        Id[i] = i;          // init the Ids
+        Id[i] = i;  // init the Ids
 
-        err = pthread_mutex_init(&baguette[i], NULL); // init the mutexs (fork)
+        err = pthread_mutex_init(&baguette[i], NULL);  // init the mutexs (fork)
         if(err!=0) {
             printf("Error: %d", -2);
             return -2;
         }
-            
 
-        err = pthread_create(&(phil[i]), NULL, &philosopheNStartCycle, &(Id[i]));   // init the threads (philosopher)
+        err = pthread_create(&(phil[i]), NULL, &philosopheNStartCycle, &(Id[i]));  // init the threads (philosopher)
 
         if(err!=0) {
             printf("Error: %d", -3);
@@ -97,7 +72,6 @@ int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
     }
 
     for (int i=0; i< PHILOSOPHES; i++) {
-
         err = pthread_join(phil[i], NULL);  // wait threads (philosopher)
         if(err!=0) {
             printf("Error: %d", -4);
@@ -105,23 +79,14 @@ int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
         }
     }
 
-    for (int i=0; i< PHILOSOPHES; i++) {
-        
-        err = pthread_mutex_destroy(&(baguette[i])); // destroy all forks (mutex)
+
+    for (int i=0; i< FORKS; i++) {
+        err = pthread_mutex_destroy(&(baguette[i]));  // destroy all forks (mutex)
         if (err != 0) {
             printf("Error: %d\n", err);
             return -5;
         }
-
-
-        if (PHILOSOPHES == 1){
-            err = pthread_mutex_destroy(&(baguette[i+1])); // destroy all forks (mutex)
-            if(err!=0) {
-                printf("Error: %d", err);
-                return -6;
-            }
-        }
     }
+    
     return 0;    
 }
-
