@@ -19,6 +19,9 @@ $(BIN_DIR)/%: $(OBJ_DIR)/%.o
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/header/%.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
+test: all 
+	./tester.sh
+
 clean:
 	$(RM) $(OBJS) $(BINS)
 

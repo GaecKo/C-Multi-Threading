@@ -103,14 +103,25 @@ int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
             printf("Error: %d", -4);
             return -4;
         }
-
-        err = pthread_mutex_destroy(&(baguette[i])); // destroy all forks (mutex)
-        if(err!=0) {
-            printf("Error: %d", -5);
-            return -5;
-        }
     }
 
+    for (int i=0; i< PHILOSOPHES; i++) {
+        
+        err = pthread_mutex_destroy(&(baguette[i])); // destroy all forks (mutex)
+        if (err != 0) {
+            printf("Error: %d\n", err);
+            return -5;
+        }
+
+
+        if (PHILOSOPHES == 1){
+            err = pthread_mutex_destroy(&(baguette[i+1])); // destroy all forks (mutex)
+            if(err!=0) {
+                printf("Error: %d", err);
+                return -6;
+            }
+        }
+    }
     return 0;    
 }
 
