@@ -7,51 +7,52 @@ pthread_t* phil;                        // array of philosopher (array of thread
 pthread_mutex_t* baguette;              // array of fork (array of mutex)
 int* Id;
 
-void mange(int id) {printf("Philosophe [%d] mange\n",id);} // eat during 0 second
+void mange(int id) {}//printf("Philosophe [%d] mange\n",id);} // eat during 0 second
 
-void* philosopheNStartCycle(void* n){ 
+void* philosopheNStartCycle(void* n) { 
         int *id=(int *) n;
         int left = *id;
         int right;
         if (PHILOSOPHES == 1) right = 1;
         else right = (left + 1) % PHILOSOPHES;
               
-    for ( size_t i = 0; i < 10000000; i++){                                       
-        printf("Philosophe [%d] pense\n",*id);   // think
+    for ( size_t i = 0; i < 10000000; i++) {                                       
+        //printf("Philosophe [%d] pense\n",*id);   // think
 
         if (left < right) {
             pthread_mutex_lock(&baguette[left]);   // take left fork
-            printf("Philosophe [%d] possède baguette gauche [%d]\n",*id,left);
+            //printf("Philosophe [%d] possède baguette gauche [%d]\n",*id,left);
 
             pthread_mutex_lock(&baguette[right]);    // take right fork
-            printf("Philosophe [%d] possède baguette droite [%d]\n",*id,right);
+            //printf("Philosophe [%d] possède baguette droite [%d]\n",*id,right);
 
             mange(*id);      // eat
 
             pthread_mutex_unlock(&baguette[left]);   // drop left fork
-            printf("Philosophe [%d] a libéré baguette gauche [%d]\n",*id,left);
+            //printf("Philosophe [%d] a libéré baguette gauche [%d]\n",*id,left);
 
             pthread_mutex_unlock(&baguette[right]); // drop right fork
-            printf("Philosophe [%d] a libéré baguette droite [%d]\n",*id,right);
+            //printf("Philosophe [%d] a libéré baguette droite [%d]\n",*id,right);
 
         } else {
             pthread_mutex_lock(&baguette[right]);   // take left fork
-            printf("Philosophe [%d] possède baguette droite [%d]\n",*id,right);
+            //printf("Philosophe [%d] possède baguette droite [%d]\n",*id,right);
 
             pthread_mutex_lock(&baguette[left]);  // take right fork
-            printf("Philosophe [%d] possède baguette gauche [%d]\n",*id,left);
+            //printf("Philosophe [%d] possède baguette gauche [%d]\n",*id,left);
 
             mange(*id);          // eat
 
             pthread_mutex_unlock(&baguette[right]);   // drop left fork
-            printf("Philosophe [%d] a libéré baguette right [%d]\n",*id,right);
+            //printf("Philosophe [%d] a libéré baguette right [%d]\n",*id,right);
 
             pthread_mutex_unlock(&baguette[left]);   // drop right fork
-            printf("Philosophe [%d] a libéré baguette left [%d]\n",*id,left);
+            //printf("Philosophe [%d] a libéré baguette left [%d]\n",*id,left);
         } 
     }
     return (void *) NULL;
 }
+
 
 int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
     int err;
@@ -81,26 +82,35 @@ int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
         Id[i] = i;          // init the Ids
 
         err = pthread_mutex_init(&baguette[i], NULL); // init the mutexs (fork)
-        if(err!=0) 
+        if(err!=0) {
+            printf("Error: %d", -2);
             return -2;
+        }
+            
 
         err = pthread_create(&(phil[i]), NULL, &philosopheNStartCycle, &(Id[i]));   // init the threads (philosopher)
 
-        if(err!=0)
+        if(err!=0) {
+            printf("Error: %d", -3);
             return -3;
+        }
     }
 
     for (int i=0; i< PHILOSOPHES; i++) {
 
-        err = pthread_join(phil[i],NULL);                                       // wait threads (philosopher)
-        if(err!=0) 
+        err = pthread_join(phil[i], NULL);  // wait threads (philosopher)
+        if(err!=0) {
+            printf("Error: %d", -4);
             return -4;
+        }
 
         err = pthread_mutex_destroy(&(baguette[i])); // destroy all forks (mutex)
-        if(err!=0) 
+        if(err!=0) {
+            printf("Error: %d", -5);
             return -5;
+        }
     }
 
-    return 1;    
+    return 0;    
 }
 

@@ -22,7 +22,11 @@ for i in 2 4 8 16 32 64; do
         # Retrieve execution time
         exec_time=$(/usr/bin/time -f %e ./c/philosophe $i 2>&1)
         echo "x$j: $exec_time"
-        line="$line, $exec_time"
+        if [[ "$exec_time" == *"status"* ]]; then
+            line="$line, ERROR"
+        else
+            line="$line, $exec_time"
+        fi 
     done
     # Append the line to csv
     echo "$line" >> "$phil_path"
