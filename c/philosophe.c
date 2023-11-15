@@ -5,7 +5,7 @@ int PHILOSOPHES;                        // number of philosopher
 
 pthread_t* phil;                        // array of philosopher (array of threads)
 pthread_mutex_t* baguette;              // array of fork (array of mutex)
-int* Id;
+int* Id;                                // array of fork id (id of mutex)
 
 void mange(int id) {}//printf("Philosophe [%d] mange\n",id);} // eat during 0 second
 
