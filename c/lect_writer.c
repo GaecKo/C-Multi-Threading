@@ -30,9 +30,10 @@ void write_data() {
 }
 
 // 2560
-void* reader() {
-    printf("reader");
+void* reader(void* n) {
+    printf("\nreader\n");
     for (int i = 0; i < 2560; i++) {
+        printf("\n loop %d\n", i);
         pthread_mutex_lock(&z);
         sem_wait(&rsem);
 
@@ -50,7 +51,7 @@ void* reader() {
         read_data();
 
         pthread_mutex_lock(&mrc);
-        read_count++;
+        read_count--;
 
         if (read_count == 0) {
             sem_post(&wsem);
@@ -62,8 +63,8 @@ void* reader() {
 }
 
 // 640 
-void* writer() {
-    printf("writer");
+void* writer(void* n) {
+    printf("\nwriter\n");
     for (int i = 0; i < 640; i++) {
         
         pthread_mutex_lock(&mwc);
@@ -95,12 +96,9 @@ void* writer() {
 
 int main(int argc, const char* argv[]) {
 
-    printf("ciao"); 
-
-    int err;
+    int err;    
     
     
-
     // read initialisation:
     err = sem_init(&rsem, 0, 1);
     if (err != 0) {
@@ -112,14 +110,11 @@ int main(int argc, const char* argv[]) {
     
 
     err = pthread_mutex_init(&mrc, NULL); // mutex for read count
-    if (err != 0) {
-        printf("error -2");
-        return -2;
-    }
+    if (err != 0) return -2;
     
 
     // write initialisation
-    err = sem_init(&wsem, 0, 0);
+    err = sem_init(&wsem, 0, 1);
     if (err != 0) {
         printf("\nError -3: %d\n", err);
         return -1;
@@ -153,6 +148,7 @@ int main(int argc, const char* argv[]) {
     }
 
     if (nb_readers == nb_writers) {
+        
         // create step by step 1 reader and one writer
         for (int t_i = 0; t_i < nb_readers; t_i++) {
             err = pthread_create(&(writers[t_i]), NULL, &writer, NULL);
