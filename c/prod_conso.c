@@ -16,8 +16,8 @@ int* IdCons;
 pthread_t* prod; // liste des producteur (threads)
 pthread_t* cons; // liste des consomateur (threads)
 
-int todo = 20;  // nbr d'item a faire
-int toeat = 20;  // nbr d'item a manger
+int todo = 8192;  // nbr d'item a faire
+int toeat = 8192;  // nbr d'item a manger
 
 int index_place_libre = 0;
 
@@ -112,8 +112,6 @@ int main(int argc, const char* argv[]) {  // argv[1] = nombre de prod, argv[2] =
             printf("Error: %d", -2);
             return -2;
         }
-    }
-    for (size_t i = 0; i < NC; i++){
         IdCons[i] = i;
         err = pthread_create(&(cons[i]), NULL, &consumer, &(IdCons[i]));  // init the threads (philosopher)
         if(err!=0) {
@@ -128,14 +126,18 @@ int main(int argc, const char* argv[]) {  // argv[1] = nombre de prod, argv[2] =
             printf("Error: %d\n", -4);
             return -4;
         }
-    }
 
-    for (int i=0; i< NC; i++) {
         err = pthread_join(cons[i], NULL);  // wait threads (philosopher)
         if(err!=0) {
             printf("Error: %d\n", -5);
             return -5;
         }
+    }
+
+    err = pthread_mutex_destroy(&(mutex));  // destroy all forks (mutex)
+    if (err != 0) {
+        printf("Error: %d\n", err);
+        return -6;
     }
 
     printf("%s ok\n", RESET);
