@@ -9,9 +9,12 @@ SRCS := $(wildcard $(SRC_DIR)/*.c)
 OBJS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 BINS := $(patsubst $(SRC_DIR)/%.c, $(BIN_DIR)/%, $(SRCS:.c=))
 
-.PHONY: all clean
+.PHONY: all clean writer
 
 all: $(BINS)
+
+writer: $(BIN_DIR)/lect_writer
+	echo "writer ready"
 
 $(BIN_DIR)/%: $(OBJ_DIR)/%.o
 	$(CC) $^ -o $@
@@ -19,9 +22,5 @@ $(BIN_DIR)/%: $(OBJ_DIR)/%.o
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/header/%.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-test: all 
-	./tester.sh
-
 clean:
 	$(RM) $(OBJS) $(BINS)
-

@@ -6,6 +6,7 @@
 #include <stdlib.h>    
 #include <stdbool.h>    
 #include <unistd.h>
+#include <semaphore.h>
 
 int main(int argc, const char* argv[]);
 
