@@ -34,12 +34,12 @@ int randomInt(){
 void insert_item(int item){
     buffer[index_place_libre] = item;
     index_place_libre++;
-    printf("%s buffer[%d] = %d\n", GREEN, index_place_libre, item);
+    // printf("%s buffer[%d] = %d\n", GREEN, index_place_libre, item);
     for (int i=0; i<10000; i++);  // simule utilisation du cpu
 }
 
 void delete_item(){
-    printf("%s buffer[%d] : SUPPRIMÉ\n", RED, index_place_libre);
+    // printf("%s buffer[%d] : SUPPRIMÉ\n", RED, index_place_libre);
     index_place_libre--;
     for (int i=0; i<10000; i++);  // simule utilisation du cpu
 }
@@ -66,7 +66,6 @@ void* producer(){
 }
 
 void* consumer(){
-    int item;
     bool continuer = true;
     while(continuer){
         sem_wait(&full); // attente d'une place remplie
@@ -103,7 +102,6 @@ int main(int argc, const char* argv[]) {  // argv[1] = nombre de prod, argv[2] =
     IdProd = (int *) malloc(NP * sizeof(int));
     IdCons = (int *) malloc(NC * sizeof(int));
     
-    printf("init done\n");
     int err;
     for (size_t i = 0; i < NP; i++){
         IdProd[i] = i;
@@ -140,6 +138,5 @@ int main(int argc, const char* argv[]) {  // argv[1] = nombre de prod, argv[2] =
         return -6;
     }
 
-    printf("%s ok\n", RESET);
-    return 1;
+    return 0;
 }
