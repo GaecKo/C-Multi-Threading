@@ -82,6 +82,10 @@ int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
             return -5;
         }
     }
+
+    free(phil);
+    free(forks);
+    free(Id);
     
     return 0;    
 }
