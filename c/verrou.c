@@ -22,7 +22,6 @@ static inline void unlock() {
     }
 
 void* travail(void* n) { 
-    int *id=(int *) n;
 
     for(int i = 0; i < todo/nbrThreads; i++){
         lock();
