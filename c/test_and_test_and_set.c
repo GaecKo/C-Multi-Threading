@@ -7,26 +7,24 @@ int nbrThreads;
 int verrou = 0;  // déverrouillé
 int todo = 64000;
 
-static inline void lock() {
-    int value = 1;
-    do {
-        __asm__(
-            "xchg %0, %1" // échange les valeurs de %0 et %1
-            : "+r" (value), "+m" (verrou)  // output
-        );
-    } while (value == 1);
+// Fonction test_and_set
+bool test_and_set() {
+    if (verrou == 1) return false; // verrou occupé
+    verrou = 1;
+    return true;
 }
 
-static inline void unlock() {
-    verrou = 0;
-    }
+void *travail() {
 
-void* travail(void* n) { 
-
-    for(int i = 0; i < todo/nbrThreads; i++){
-        lock();
+    for (int i = 0; i < todo/nbrThreads; i++) {
+        while (test_and_set() == false) { // on a pas le verrou
+            while (verrou == 1) {}
+        }
+        // Section critique
         for (size_t i = 0; i < 10000; i++);
-        unlock();
+
+        // Libération du verrou
+        verrou = 0;
     }
     return NULL;
 }
@@ -44,7 +42,7 @@ int main(int argc, const char* argv[]) {
 
     for (size_t i = 0; i < nbrThreads; i++){
         Id[i] = i;
-        err = pthread_create(&(threads[i]), NULL, &travail, &(Id[i]));  // init the threads
+        err = pthread_create(&(threads[i]), NULL, &travail, NULL);  // init the threads
         if(err!=0){
             printf("Error: %d", -3);
             return -3;
@@ -61,6 +59,4 @@ int main(int argc, const char* argv[]) {
 
     free(threads);
     free(Id);
-
-    return 0;
 }

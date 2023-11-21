@@ -94,10 +94,10 @@ for i in 2 4 8 16 32 64; do
 done
 
 # 6) Test on 2.1
-printf "= = = = = = = = = = = = = = = = = = = = = = =\n\nLaunching reader - writer tests...\n"
+printf "= = = = = = = = = = = = = = = = = = = = = = =\n\nLaunching test-and-set tests...\n"
 
 # | 6.1: file
-path="data/verrou.csv"
+path="data/test_and_set.csv"
 
 # | 6.2: first line of csv
 echo "nb_thread, x1, x2, x3, x4, x5" > "$path"
@@ -108,7 +108,36 @@ for i in 1 2 4 8 16 32 64; do
     printf "Test with $i threads:\n"
     for j in {1..5}; do
         # Retrieve execution time
-        exec_time=$(/usr/bin/time -f %e ./c/verrou $i 2>&1)
+        exec_time=$(/usr/bin/time -f %e ./c/test_and_set $i 2>&1)
+        echo "x$j: $exec_time"
+        if [[ "$exec_time" == *"status"* ]]; then
+            line="$line, ERROR"
+        else
+            line="$line, $exec_time"
+        fi 
+    done
+    # Append the line to csv
+    echo "$line" >> "$path"
+    printf "\n"
+done
+
+
+# 7) Test on 2.3
+printf "= = = = = = = = = = = = = = = = = = = = = = =\n\nLaunching test-and-test-and-set tests...\n"
+
+# | 7.1: file
+path="data/test_and_test_and_set.csv"
+
+# | 7.2: first line of csv
+echo "nb_thread, x1, x2, x3, x4, x5" > "$path"
+
+# | 7.3) testing with 1 to 64 threads 
+for i in 1 2 4 8 16 32 64; do 
+    line="$i"
+    printf "Test with $i threads:\n"
+    for j in {1..5}; do
+        # Retrieve execution time
+        exec_time=$(/usr/bin/time -f %e ./c/test_and_test_and_set $i 2>&1)
         echo "x$j: $exec_time"
         if [[ "$exec_time" == *"status"* ]]; then
             line="$line, ERROR"
