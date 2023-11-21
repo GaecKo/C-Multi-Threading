@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include<pthread.h>
-#include <stdbool.h>
+#include "header/test_and_test_and_set.h"
 
 int nbrThreads;
 int verrou = 0;  // déverrouillé

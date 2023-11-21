@@ -1,6 +1,5 @@
 #include "header/philosophe.h"
 
-// Global Var
 int PHILOSOPHES;                        // number of philosopher
 int FORKS;                              // number of fork
 

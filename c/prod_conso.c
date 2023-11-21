@@ -1,9 +1,6 @@
 #include "header/prod_conso.h"
 
 #define N 8 // places dans le buffer
-#define RED "\033[0;31m"
-#define GREEN "\033[0;32m"
-#define RESET "\033[0m" 
 
 int buffer[N];
 pthread_mutex_t mutex;
@@ -39,7 +36,6 @@ void insert_item(int item){
 }
 
 void delete_item(){
-    // printf("%s buffer[%d] : SUPPRIMÉ\n", RED, index_place_libre);
     index_place_libre--;
     for (int i=0; i<10000; i++);  // simule utilisation du cpu
 }
