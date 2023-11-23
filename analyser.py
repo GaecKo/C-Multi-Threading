@@ -44,7 +44,7 @@ axis[0].set_facecolor("lavender")
 
 ax0 = axis[0].twinx()
 ax0.set_ylabel('Écart-type', color="tab:blue")
-ax0.scatter(["2", "4", "8", "16", "32", "64"], Ph_std_per_threads)
+ax0.errorbar(["2", "4", "8", "16", "32", "64"], Ph_std_per_threads, yerr=Ph_std_per_threads)
 ax0.tick_params(axis='y', color="tab:blue")
 
 # ==================================================================
@@ -66,7 +66,7 @@ axis[1].set_facecolor("lavender")
 
 ax1 = axis[1].twinx()
 ax1.set_ylabel('Écart-type', color="tab:blue")
-ax1.scatter(["2", "4", "8", "16", "32", "64"], Pr_std_per_threads)
+ax1.errorbar(["2", "4", "8", "16", "32", "64"], Pr_mean_per_threads, yerr=Pr_std_per_threads)
 ax1.tick_params(axis='y', color="tab:blue")
 
 # ==================================================================
@@ -87,7 +87,7 @@ axis[2].set_facecolor("lavender")
 
 ax2 = axis[2].twinx()
 ax2.set_ylabel('Écart-type', color="tab:blue")
-ax2.scatter(["2", "4", "8", "16", "32", "64"], Le_std_per_threads)
+ax2.errorbar(["2", "4", "8", "16", "32", "64"], Le_std_per_threads, yerr=Le_std_per_threads)
 ax2.tick_params(axis='y', color="tab:blue")
 
 # ==================================================================
@@ -108,7 +108,7 @@ axis[3].set_facecolor("lavender")
 
 ax3 = axis[3].twinx()
 ax3.set_ylabel('Écart-type', color="tab:blue")
-ax3.scatter(["2", "4", "8", "16", "32", "64"], T_s_std_per_threads)
+ax3.errorbar(["2", "4", "8", "16", "32", "64"], T_s_std_per_threads, yerr=T_s_std_per_threads)
 ax3.tick_params(axis='y', color="tab:blue")
 
 # ==================================================================
