@@ -30,4 +30,7 @@ pthread_mutex_t z;
 pthread_mutex_t mrc; // mutex for read count
 int read_count;
 
+int nb_readers;
+int nb_writers;
+
 #endif

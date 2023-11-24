@@ -14,6 +14,9 @@ pthread_mutex_t z;
 pthread_mutex_t mrc; // mutex for read count
 int read_count;
 
+int nb_readers;
+int nb_writers;
+
 
 void read_data() {
     for (int i=0; i<10000; i++);
@@ -27,8 +30,9 @@ void write_data() {
 void* reader() {
     // reader method. Reads carefully while making sure data is 
     // synchronised / used by multiple threads properly
+     int iter = 2560 / nb_readers;
 
-    for (int i = 0; i < 2560; i++) {
+    for (int i = 0; i < iter; i++) {
         pthread_mutex_lock(&z);
         sem_wait(&rsem);
 
@@ -61,8 +65,8 @@ void* reader() {
 void* writer() {
     // Writer method. Writes carefully while making sure data is 
     // synchronised / used by multiple threads properly
-
-    for (int i = 0; i < 640; i++) {
+    int iter = 640 / nb_writers;
+    for (int i = 0; i < iter; i++) {
         
         pthread_mutex_lock(&mwc);
         // Critical section
@@ -122,8 +126,8 @@ int main(int argc, const char* argv[]) {
         return -3;
     }
 
-    int nb_readers = atoi(argv[1]);
-    int nb_writers = atoi(argv[2]);
+    nb_readers = atoi(argv[1]);
+    nb_writers = atoi(argv[2]);
 
     
     // create array of threads
