@@ -4,8 +4,8 @@
 
 int buffer[N];
 pthread_mutex_t mutex;
-sem_t empty; // compte les places vides
-sem_t full;  // compte les places occupées
+sem_t empty;
+sem_t full;
 
 int* IdProd;
 int* IdCons;
@@ -31,7 +31,6 @@ int randomInt(){
 void insert_item(int item){
     buffer[index_place_libre] = item;
     index_place_libre++;
-    // printf("%s buffer[%d] = %d\n", GREEN, index_place_libre, item);
     for (int i=0; i<10000; i++);  // simule utilisation du cpu
 }
 
@@ -40,42 +39,46 @@ void delete_item(){
     for (int i=0; i<10000; i++);  // simule utilisation du cpu
 }
 
-void* producer(){
+void* producer(void* id) {
     int item;
-    bool continuer = true;
-    while(continuer){ // les producteurs tournent jusqua avoir produit 8192 items.
+    while (1) {
         item = randomInt();
-        sem_wait(&empty); // attente d'une place libre
+        sem_wait(&empty);
         pthread_mutex_lock(&mutex);
-        // section critique
 
-        if (todo > 0){ // juste pour consommer moins d'energie, ils arretent de tourner si il ont produit les 8192 items.
-            insert_item(item);
-            todo--;
-            }
-        else continuer = false;
+        if (todo <= 0) {
+            pthread_mutex_unlock(&mutex);
+            sem_post(&full);
+            break;
+        }
+
+        //printf("thread[%d]: add\n", *(int*)id);
+        insert_item(item);
+        todo--;
 
         pthread_mutex_unlock(&mutex);
-        sem_post(&full); // une place remplie en plus
+        sem_post(&full);
     }
     return NULL;
 }
 
-void* consumer(){
-    bool continuer = true;
-    while(continuer){
-        sem_wait(&full); // attente d'une place remplie
+void* consumer(void* id) {
+    while (1) {
+        sem_wait(&full);
         pthread_mutex_lock(&mutex);
-        // section critique
 
-        if (toeat > 0){ // juste pour consommer moins d'energie, ils arretent de tourner si il ont mangé les 8192 items.
-            delete_item();
-            toeat--;
-            }
-        else continuer = false;
+        if (toeat <= 0) {
+            pthread_mutex_unlock(&mutex);
+            sem_post(&empty);
+            break;
+        }
+
+        //printf("thread[%d]: supp\n", *(int*)id);
+        delete_item();
+        toeat--;
 
         pthread_mutex_unlock(&mutex);
-        sem_post(&empty); // une place libre en plus
+        sem_post(&empty);
     }
     return NULL;
 }
@@ -128,11 +131,20 @@ int main(int argc, const char* argv[]) {  // argv[1] = nombre de prod, argv[2] =
         }
     }
 
-    err = pthread_mutex_destroy(&(mutex));  // destroy all forks (mutex)
+
+    err = pthread_mutex_destroy(&(mutex));
     if (err != 0) {
         printf("Error: %d\n", err);
         return -6;
     }
+
+    sem_destroy(&full);
+    sem_destroy(&empty);
+
+    free(prod);
+    free(cons);
+    free(IdProd);
+    free(IdCons);
 
     return 0;
 }
