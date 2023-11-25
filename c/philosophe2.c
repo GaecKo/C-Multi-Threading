@@ -1,5 +1,5 @@
-#include "header/philosophe.h"
-#include "header/sem.h"
+#include "include/philosophe.h"
+#include "include/sem.h"
 
 
 

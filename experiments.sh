@@ -1,7 +1,7 @@
 #!/bin/bash
 # nproc: retrieves the number of CPU cores
 
-# 1 arg exec call
+# 1) 1 arg exec call
 perform_test_one_arg() {
     local executable="$1"
     local path="$2"
@@ -25,7 +25,7 @@ perform_test_one_arg() {
     done
 }
 
-# 2 args exec call
+# 2) 2 args exec call
 perform_test_two_args() {
     local executable="$1"
     local path="$2"
@@ -95,4 +95,38 @@ perform_test_one_arg "test_and_test_and_set" "data/test_and_test_and_set.csv"
 
 printf "= = = = = = = = = = = = = = = = = = = = = = =\n\nTests done successfully!"
 
-python3 analyser.py
+echo "### philo"
+cat "data/philosophe.csv"
+echo ""
+echo "### philo2"
+cat "data/philosophe2.csv"
+echo""
+echo "------------------------------"
+echo""
+
+echo "### lect"
+cat "data/lect_writer.csv"
+echo ""
+echo "### lect2"
+cat "data/lect_writer2.csv"
+echo""
+echo "------------------------------"
+echo""
+
+echo "### prod_conso"
+cat "data/prod_conso.csv"
+echo ""
+echo "### prod_conso2"
+cat "data/prod_conso2.csv"
+echo""
+echo "------------------------------"
+echo""
+
+echo "### test and set"
+cat "data/test_and_set.csv"
+echo ""
+echo "### test and test and set"
+cat "data/test_and_test_and_set.csv"
+echo""
+echo "------------------------------"
+echo""

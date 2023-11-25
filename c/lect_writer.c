@@ -1,4 +1,4 @@
-#include "header/lect_writer.h"
+#include "include/lect_writer.h"
 
 // Global var
 pthread_t* readers;

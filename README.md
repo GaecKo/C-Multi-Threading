@@ -6,12 +6,13 @@ Pour lancer le code, il faut simplement entrer `make`. Les trois fichiers `c` se
 ## Organisation des fichiers
 ```
 |- Makefile     # make command
-|- tester.sh    # data maker
+|- experiments.sh    # data maker
 |- analyser.py  # graph maker
 |- README.md    # project explainer
 |- *.pdf        # project instruction
 |
 |c/  # c folder (programs)
+
     |- sem.c
     |- philosophe.c
     |- prod_conso.c
@@ -24,11 +25,22 @@ Pour lancer le code, il faut simplement entrer `make`. Les trois fichiers `c` se
         |- philosophe.h
         |- prod_conso.h
         |- lect_writer.h
+    |- build/
+        |- sem.o # compiled version of sem, when make is runned
 | 
 |data/  # csv folder (retrieved data)
     |- philosophe.csv
-    |- prod-conso.csv
-    |- lect-writer.csv
+    |- prod_conso.csv
+    |- lect_writer.csv
+    |- philosophe2.csv
+    |- prod_conso2.csv
+    |- lect_writer2.csv
+    |- test_and_set.csv
+    |- test_and_test_and_set.csv
+|
+|executables/ # completed when make run is runned
+    |- philosophe
+    |- ...
 |
 ```
 

@@ -1,4 +1,4 @@
-#include "header/philosophe.h"
+#include "include/philosophe.h"
 
 int PHILOSOPHES;                        // number of philosopher
 int FORKS;                              // number of fork

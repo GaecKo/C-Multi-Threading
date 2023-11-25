@@ -1,4 +1,4 @@
-#include "header/test_and_test_and_set.h"
+#include "include/test_and_test_and_set.h"
 
 int nbrThreads;
 int verrou = 0;  // déverrouillé

@@ -1,46 +1,47 @@
-# Compiler settings
 CC := gcc
-CFLAGS := -Wall -Werror -Iincludes/
+CFLAGS := -Wall -Werror -Ic/include -lpthread
 
-# Source, build, and executable directories
+# Directories 
 SRC_DIR := c
 BUILD_DIR := $(SRC_DIR)/build
 EXEC_DIR := executables
 
 # Source files
-SOURCES := $(wildcard $(SRC_DIR)/*.c)
-# Exclude sem.c from executables
-EXECS := $(filter-out sem,$(patsubst $(SRC_DIR)/%.c,%,$(SOURCES)))
-
-# Special case source files that need sem.c
+SOURCES := $(wildcard $(SRC_DIR)/*.c) # all c files
+EXECS := $(filter-out sem,$(patsubst $(SRC_DIR)/%.c,%,$(SOURCES))) # all c file, except sem. Removes dir name: c/file1 -> file1 with patsubst
 SPECIAL_SOURCES := $(wildcard $(SRC_DIR)/*2.c)
+HEADER = $(wildcard $(SRC_DIR)/headers/*.h)
 
 
-# Rule to make everything
+# make 
 all: folder $(addprefix $(EXEC_DIR)/,$(EXECS))
-	echo "Compilation finished"
+	@echo "Compilation finished"
 
+# creating folders
 folder:
-	mkdir -p $(EXEC_DIR)
-	mkdir -p $(BUILD_DIR)
+	@mkdir -p $(EXEC_DIR)
+	@mkdir -p $(BUILD_DIR)
 
-# Rule to make each executable
+# file: needs file.o and sem.o
 $(EXEC_DIR)/%: $(BUILD_DIR)/%.o $(BUILD_DIR)/sem.o
 	$(CC) $(CFLAGS) $^ -o $@
 
-# Rule to compile object files from source files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+# file.o: needs file.c
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Special rule for files that include sem.c
+# sem.o: needs sem.c
 $(BUILD_DIR)/sem.o: $(SRC_DIR)/sem.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean up
 clean:
+	@echo "Cleaning up..."
 	rm -rf $(BUILD_DIR) $(EXEC_DIR) 
 
 test: all 
+	@echo "testing..."
 	./experiments.sh 
+	@echo "make test done!"
 
-.PHONY: all clean
+.PHONY: all clean test 

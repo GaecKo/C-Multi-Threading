@@ -1,5 +1,5 @@
-#include "header/lect_writer.h"
-#include "header/sem.h"
+#include "include/lect_writer.h"
+#include "include/sem.h"
 
 // Global var
 pthread_t* readers;

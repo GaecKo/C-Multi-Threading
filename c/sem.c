@@ -1,4 +1,4 @@
-#include "header/sem.h"
+#include "include/sem.h"
 
 int init(sem *s, int value) {
     s->value = value;
