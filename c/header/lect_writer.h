@@ -20,9 +20,6 @@ int main(int argc, const char* argv[]);
 pthread_t* readers;
 pthread_t* writers;
 
-sem_t rsem; // Access to 'DB'
-sem_t wsem;  // max 1 writer at once
-
 pthread_mutex_t mwc; // mutex for write count
 int write_count;
 

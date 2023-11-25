@@ -1,12 +1,4 @@
-#include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h> // import usleep()
-#include <stdio.h>
-
-typedef struct {
-    int value;
-    pthread_mutex_t verrou;
-} sem;
+#include "header/sem.h"
 
 int init(sem *s, int value) {
     s->value = value;

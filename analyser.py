@@ -24,7 +24,7 @@ def getMeanAndStd(filename: str) -> tuple[list[float], float]:
 
     return Mean_per_threads, Std_per_threads
 
-figure, axis = plt.subplots(1, 4)
+figure, axis = plt.subplots(2, 4)
 
 # ==================================================================
 # ====================( 1. Philo Time Analysis )====================
@@ -32,42 +32,76 @@ figure, axis = plt.subplots(1, 4)
 
 Ph_mean_per_threads, Ph_std_per_threads = getMeanAndStd("data/philosophe.csv")
 
-axis[0].set_title("Problème des Philosophes")
-axis[0].set_xlabel("Nombre de threads")
+Ph2_mean_per_threads, Ph2_std_per_threads = getMeanAndStd("data/philosophe2.csv")
 
-axis[0].bar(["2", "4", "8", "16", "32", "64"], Ph_mean_per_threads, color = (0, 0, 0, 0.4))
 
-axis[0].set_ylabel("Moyenne sur 5 tests [s]", color = (0, 0, 0, 1))
-axis[0].grid(linestyle='--', alpha=0.5)
+axis[0, 0].set_title("Problème des Philosophes")
+axis[0, 0].set_xlabel("Nombre de threads")
 
-axis[0].set_facecolor("lavender")
+axis[0, 0].bar(["2", "4", "8", "16", "32", "64"], Ph_mean_per_threads, color = (0.8, 0.2, 0.2, 0.5))
 
-ax0 = axis[0].twinx()
-ax0.set_ylabel('Écart-type', color="tab:blue")
-ax0.errorbar(["2", "4", "8", "16", "32", "64"], Ph_std_per_threads, yerr=Ph_std_per_threads)
-ax0.tick_params(axis='y', color="tab:blue")
+axis[0, 0].bar(["2", "4", "8", "16", "32", "64"], Ph2_mean_per_threads, color = (0, 0, 0, 0.4))
+
+
+
+axis[0, 0].legend(["Using Default Sem", "Using our Sem"])
+
+axis[0, 0].set_ylabel("Moyenne sur 5 tests [s]", color = (0, 0, 0, 1))
+axis[0, 0].grid(linestyle='--', alpha=0.5)
+
+axis[0, 0].set_facecolor("lavender")
+
+
+
+axis[1, 0].errorbar(["2", "4", "8", "16", "32", "64"], Ph_std_per_threads, yerr=Ph_std_per_threads, color = (0.8, 0.2, 0.2, 0.5))
+
+axis[1, 0].errorbar(["2", "4", "8", "16", "32", "64"], Ph2_std_per_threads, yerr=Ph2_std_per_threads, color = (0, 0, 0, 0.4))
+
+axis[1, 0].legend(["Using Default Sem", "Using our Sem"])
+axis[1, 0].set_xlabel("Nombre de threads")
+axis[1, 0].set_ylabel("Écart-Type", color = (0, 0, 0, 1))
+axis[1, 0].grid(linestyle='--', alpha=0.5)
+
+axis[1, 0].set_facecolor("lavender")
+
 
 # ==================================================================
 # ==================( 2. Prod-Conso Time Analysis )=================
 # ==================================================================
 
-# Compute data used in plots
 Pr_mean_per_threads, Pr_std_per_threads = getMeanAndStd("data/prod_conso.csv")
 
-axis[1].set_title("Problème des Producteurs - Consommateurs")
-axis[1].set_xlabel("Nombre de threads")
+Pr2_mean_per_threads, Pr2_std_per_threads = getMeanAndStd("data/prod_conso2.csv")
 
-axis[1].bar(["2", "4", "8", "16", "32", "64"], Pr_mean_per_threads, color = (0, 0, 0, 0.4))
 
-axis[1].set_ylabel("Moyenne sur 5 tests [s]", color = (0, 0, 0, 1))
-axis[1].grid(linestyle='--', alpha=0.5)
+axis[0, 1].set_title("Problème des Producteurs - Consommateurs")
+axis[0, 1].set_xlabel("Nombre de threads")
 
-axis[1].set_facecolor("lavender")
+axis[0, 1].bar(["2", "4", "8", "16", "32", "64"], Pr_mean_per_threads, color = (0.8, 0.2, 0.2, 0.5))
 
-ax1 = axis[1].twinx()
-ax1.set_ylabel('Écart-type', color="tab:blue")
-ax1.errorbar(["2", "4", "8", "16", "32", "64"], Pr_mean_per_threads, yerr=Pr_std_per_threads)
-ax1.tick_params(axis='y', color="tab:blue")
+axis[0, 1].bar(["2", "4", "8", "16", "32", "64"], Pr2_mean_per_threads, color = (0, 0, 0, 0.4))
+
+
+
+axis[0, 1].legend(["Using Default Sem", "Using our Sem"])
+
+axis[0, 1].set_ylabel("Moyenne sur 5 tests [s]", color = (0, 0, 0, 1))
+axis[0, 1].grid(linestyle='--', alpha=0.5)
+
+axis[0, 1].set_facecolor("lavender")
+
+
+
+axis[1, 1].errorbar(["2", "4", "8", "16", "32", "64"], Pr_std_per_threads, yerr=Pr_std_per_threads, color = (0.8, 0.2, 0.2, 0.5))
+
+axis[1, 1].errorbar(["2", "4", "8", "16", "32", "64"], Pr2_std_per_threads, yerr=Pr2_std_per_threads, color = (0, 0, 0, 0.4))
+
+axis[1, 1].legend(["Using Default Sem", "Using our Sem"])
+axis[1, 1].set_xlabel("Nombre de threads")
+axis[1, 1].set_ylabel("Écart-Type", color = (0, 0, 0, 1))
+axis[1, 1].grid(linestyle='--', alpha=0.5)
+
+axis[1, 1].set_facecolor("lavender")
 
 # ==================================================================
 # ================( 3. Reader-Writer Time Analysis )================
@@ -75,20 +109,37 @@ ax1.tick_params(axis='y', color="tab:blue")
 
 Le_mean_per_threads, Le_std_per_threads = getMeanAndStd("data/lect_writer.csv")
 
-axis[2].set_title("Problème des Lecteurs - Écrivaints")
-axis[2].set_xlabel("Nombre de threads")
+Le2_mean_per_threads, Le2_std_per_threads = getMeanAndStd("data/lect_writer2.csv")
 
-axis[2].bar(["2", "4", "8", "16", "32", "64"], Le_mean_per_threads, color = (0, 0, 0, 0.4))
 
-axis[2].set_ylabel("Moyenne sur 5 tests [s]", color = (0, 0, 0, 1))
-axis[2].grid(linestyle='--', alpha=0.5)
+axis[0, 2].set_title("Problème des Lecteurs - Écrivains")
+axis[0, 2].set_xlabel("Nombre de threads")
 
-axis[2].set_facecolor("lavender")
+axis[0, 2].bar(["2", "4", "8", "16", "32", "64"], Le_mean_per_threads, color = (0.8, 0.2, 0.2, 0.5))
 
-ax2 = axis[2].twinx()
-ax2.set_ylabel('Écart-type', color="tab:blue")
-ax2.errorbar(["2", "4", "8", "16", "32", "64"], Le_std_per_threads, yerr=Le_std_per_threads)
-ax2.tick_params(axis='y', color="tab:blue")
+axis[0, 2].bar(["2", "4", "8", "16", "32", "64"], Le2_mean_per_threads, color = (0, 0, 0, 0.4))
+
+
+
+axis[0, 2].legend(["Using Default Sem", "Using our Sem"])
+
+axis[0, 2].set_ylabel("Moyenne sur 5 tests [s]", color = (0, 0, 0, 1))
+axis[0, 2].grid(linestyle='--', alpha=0.5)
+
+axis[0, 2].set_facecolor("lavender")
+
+
+
+axis[1, 2].errorbar(["2", "4", "8", "16", "32", "64"], Le_std_per_threads, yerr=Le_std_per_threads, color = (0.8, 0.2, 0.2, 0.5))
+
+axis[1, 2].errorbar(["2", "4", "8", "16", "32", "64"], Le2_std_per_threads, yerr=Le2_std_per_threads, color = (0, 0, 0, 0.4))
+
+axis[1, 2].legend(["Using Default Sem", "Using our Sem"])
+axis[1, 2].set_xlabel("Nombre de threads")
+axis[1, 2].set_ylabel("Écart-Type", color = (0, 0, 0, 1))
+axis[1, 2].grid(linestyle='--', alpha=0.5)
+
+axis[1, 2].set_facecolor("lavender")
 
 # ==================================================================
 # ================( 4. Test-and-Set Time Analysis )================
@@ -96,27 +147,44 @@ ax2.tick_params(axis='y', color="tab:blue")
 
 T_s_mean_per_threads, T_s_std_per_threads = getMeanAndStd("data/test_and_set.csv")
 
-axis[3].set_title("Test-and-Set")
-axis[3].set_xlabel("Nombre de threads")
+T_T_s_mean_per_threads, T_T_s_std_per_threads = getMeanAndStd("data/test_and_test_and_set.csv")
 
-axis[3].bar(["2", "4", "8", "16", "32", "64"], T_s_mean_per_threads, color = (0, 0, 0, 0.4))
 
-axis[3].set_ylabel("Moyenne sur 5 tests [s]", color = (0, 0, 0, 1))
-axis[3].grid(linestyle='--', alpha=0.5)
+axis[0, 3].set_title("Test-and-set / Test-and-test-and-set")
+axis[0, 3].set_xlabel("Nombre de threads")
 
-axis[3].set_facecolor("lavender")
+axis[0, 3].bar(["2", "4", "8", "16", "32", "64"], T_s_mean_per_threads, color = (0.8, 0.2, 0.2, 0.5))
 
-ax3 = axis[3].twinx()
-ax3.set_ylabel('Écart-type', color="tab:blue")
-ax3.errorbar(["2", "4", "8", "16", "32", "64"], T_s_std_per_threads, yerr=T_s_std_per_threads)
-ax3.tick_params(axis='y', color="tab:blue")
+axis[0, 3].bar(["2", "4", "8", "16", "32", "64"], T_T_s_mean_per_threads, color = (0, 0, 0, 0.4))
+
+
+
+axis[0, 3].legend(["Test-and-Set", "Test-and-Test-and-Set"])
+
+axis[0, 3].set_ylabel("Moyenne sur 5 tests [s]", color = (0, 0, 0, 1))
+axis[0, 3].grid(linestyle='--', alpha=0.5)
+
+axis[0, 3].set_facecolor("lavender")
+
+
+
+axis[1, 3].errorbar(["2", "4", "8", "16", "32", "64"], T_s_std_per_threads, yerr=T_s_std_per_threads, color = (0.8, 0.2, 0.2, 0.5))
+
+axis[1, 3].errorbar(["2", "4", "8", "16", "32", "64"], T_T_s_std_per_threads, yerr=T_T_s_std_per_threads, color = (0, 0, 0, 0.4))
+
+axis[1, 3].legend(["Test-and-Set", "Test-and-Test-and-Set"])
+axis[1, 3].set_xlabel("Nombre de threads")
+axis[1, 3].set_ylabel("Écart-Type", color = (0, 0, 0, 1))
+axis[1, 3].grid(linestyle='--', alpha=0.5)
+
+axis[1, 3].set_facecolor("lavender")
 
 # ==================================================================
 # ===================( 4. Ploting Settings )========================
 # ==================================================================
 
 fig = plt.gcf()
-fig.set_size_inches(18, 6, forward=True)
+fig.set_size_inches(18, 12, forward=True)
 
 plt.grid(linestyle='--', alpha=0.5)
 plt.subplots_adjust(top=0.937,

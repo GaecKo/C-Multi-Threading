@@ -1,15 +1,14 @@
 #include "header/philosophe.h"
-#include "sem.c"
+#include "header/sem.h"
 
-#include <pthread.h>
-#include <stdlib.h>
+
 
 
 int PHILOSOPHES;                        // number of philosopher
 int FORKS;                              // number of fork
 
 pthread_t* phil;                        // array of philosopher (array of threads)
-sem* forks;              // array of fork (array of mutex)
+sem* forks;                             // array of fork (array of mutex)
 int* Id;                                // array of fork's id (id of mutex)
 
 void mange(int id) {}  // eat during 0 second

@@ -12,11 +12,15 @@ Pour lancer le code, il faut simplement entrer `make`. Les trois fichiers `c` se
 |- *.pdf        # project instruction
 |
 |c/  # c folder (programs)
-    |- executable (×3 after `make`)
+    |- sem.c
     |- philosophe.c
     |- prod_conso.c
-    |- lect_writer.h
+    |- lect_writer.c
+    |- philosophe2.c # using header/sem.h
+    |- prod_conso2.c # using header/sem.h
+    |- lect_writer2.c #using header/sem.h
     |- includes/  # headers
+        |- sem.h
         |- philosophe.h
         |- prod_conso.h
         |- lect_writer.h

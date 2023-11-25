@@ -1,12 +1,12 @@
 #include "header/lect_writer.h"
-#include "sem.c"
+#include "header/sem.h"
 
 // Global var
 pthread_t* readers;
 pthread_t* writers;
 
 sem rsem; // Access to 'DB'
-sem wsem;  // max 1 writer at once
+sem wsem;  // max 1 writer at once  
 
 pthread_mutex_t mwc; // mutex for write count
 int write_count;

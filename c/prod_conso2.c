@@ -1,5 +1,5 @@
 #include "header/prod_conso.h"
-#include "sem.c"
+#include "header/sem.h"
 
 #define N 8 // places dans le buffer
 

@@ -1,29 +1,46 @@
+# Compiler settings
 CC := gcc
-CFLAGS := -Wall -Werror -I$(SRC_DIR)/header
+CFLAGS := -Wall -Werror -Iincludes/
 
+# Source, build, and executable directories
 SRC_DIR := c
-OBJ_DIR := $(SRC_DIR)
-BIN_DIR := .
+BUILD_DIR := $(SRC_DIR)/build
+EXEC_DIR := executables
 
-SRCS := $(wildcard $(SRC_DIR)/*.c)
-OBJS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
-BINS := $(patsubst $(SRC_DIR)/%.c, $(BIN_DIR)/%, $(SRCS:.c=))
+# Source files
+SOURCES := $(wildcard $(SRC_DIR)/*.c)
+# Exclude sem.c from executables
+EXECS := $(filter-out sem,$(patsubst $(SRC_DIR)/%.c,%,$(SOURCES)))
 
-.PHONY: all clean writer
+# Special case source files that need sem.c
+SPECIAL_SOURCES := $(wildcard $(SRC_DIR)/*2.c)
 
-all: $(BINS)
 
-writer: $(BIN_DIR)/lect_writer
-	echo "writer ready"
+# Rule to make everything
+all: folder $(addprefix $(EXEC_DIR)/,$(EXECS))
+	echo "Compilation finished"
 
-$(BIN_DIR)/%: $(OBJ_DIR)/%.o
-	$(CC) $^ -o $@
+folder:
+	mkdir -p $(EXEC_DIR)
+	mkdir -p $(BUILD_DIR)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/header/%.h
+# Rule to make each executable
+$(EXEC_DIR)/%: $(BUILD_DIR)/%.o $(BUILD_DIR)/sem.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+# Rule to compile object files from source files
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-test: all 
-	./tester.sh
+# Special rule for files that include sem.c
+$(BUILD_DIR)/sem.o: $(SRC_DIR)/sem.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
+# Clean up
 clean:
-	$(RM) $(OBJS) $(BINS)
+	rm -rf $(BUILD_DIR) $(EXEC_DIR) 
+
+test: all 
+	./experiments.sh 
+
+.PHONY: all clean
