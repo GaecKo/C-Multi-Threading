@@ -8,7 +8,9 @@
 
 // functions
 bool test_and_set();
+
 void *travail();
+
 int main(int argc, const char* argv[]);
 
 #endif

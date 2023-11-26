@@ -8,7 +8,7 @@ int PHILOSOPHES;                        // number of philosopher
 int FORKS;                              // number of fork
 
 pthread_t* phil;                        // array of philosopher (array of threads)
-sem* forks;                             // array of fork (array of mutex)
+mut* forks;                             // array of fork (array of mutex)
 int* Id;                                // array of fork's id (id of mutex)
 
 void mange(int id) {}  // eat during 0 second
@@ -25,17 +25,17 @@ void* philosopheNCycle(void* n) {
         int indexFirst = (left < right)? left : right;  // index of first fork caught
         int indexSecond = (left < right)? right : left;  // index of second fork caught
 
-        wait(&forks[indexFirst]);  // take the first fork
+        lock_mut(&forks[indexFirst]);  // take the first fork
         //printf("philosophe[%d]: a pris baguette[%d]\n", *id, indexFirst);
 
-        wait(&forks[indexSecond]);  // take de second fork
+        lock_mut(&forks[indexSecond]);  // take de second fork
         //printf("philosophe[%d]: a pris baguette[%d]\n", *id, indexSecond);
 
         mange(*id);  // eat
         //printf("philosophe[%d]: mange\n", *id);
 
-        post(&forks[indexFirst]);  // drop de first fork
-        post(&forks[indexSecond]);  // drop de second fork
+        unlock_mut(&forks[indexFirst]);  // drop de first fork
+        unlock_mut(&forks[indexSecond]);  // drop de second fork
         
     }
     return NULL;
@@ -53,7 +53,7 @@ int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
 
     // allocates memory for philosophers, forks and id
     phil = (pthread_t *) malloc(PHILOSOPHES * sizeof(pthread_t));
-    forks = (sem *) malloc(FORKS * sizeof(sem));
+    forks = (mut *) malloc(FORKS * sizeof(mut));
     Id = (int *) malloc(FORKS * sizeof(int));
     
     // init philosophers, forks and id
@@ -61,7 +61,7 @@ int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
 
         Id[i] = i;  // init the Ids
 
-        err = init(&forks[i], 1);  // init semaphores (fork)
+        err = init_mut(&forks[i]);  // init semaphores (fork)
         if(err!=0) {
             printf("Error: %d", -2);
             return -2;
@@ -75,7 +75,7 @@ int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
     }
 
     for (int i=0; i< PHILOSOPHES; i++) {
-        err = pthread_join(phil[i], NULL);  // wait threads (philosopher)
+        err = pthread_join(phil[i], NULL);  // lock_mut threads (philosopher)
         if(err!=0) {
             printf("Error: %d", -4);
             return -4;
@@ -83,7 +83,7 @@ int main(int argc, const char* argv[]) { // argv[1] = number of philosopher
     }
 
     for (int i=0; i< FORKS; i++) {
-        err = destroy(&(forks[i]));  // destroy all forks (semaphores)
+        err = destroy_mut(&(forks[i]));  // destroy all forks (semaphores)
         if (err != 0) {
             printf("Error: %d\n", err);
             return -5;

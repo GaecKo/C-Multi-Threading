@@ -8,11 +8,11 @@ pthread_t* writers;
 sem rsem; // Access to 'DB'
 sem wsem;  // max 1 writer at once  
 
-pthread_mutex_t mwc; // mutex for write count
+mut mwc; // mutex for write count
 int write_count;
 
-pthread_mutex_t z; 
-pthread_mutex_t mrc; // mutex for read count
+mut z; 
+mut mrc; // mutex for read count
 int read_count;
 
 int nb_readers;
@@ -34,29 +34,29 @@ void* reader() {
      int iter = 2560 / nb_readers;
 
     for (int i = 0; i < iter; i++) {
-        pthread_mutex_lock(&z);
-        wait(&rsem);
+        lock_mut(&z);
+        wait_sem(&rsem);
 
-        pthread_mutex_lock(&mrc);
+        lock_mut(&mrc);
         read_count++;
 
         if (read_count == 1) {
-            wait(&wsem);
+            wait_sem(&wsem);
         }
 
-        pthread_mutex_unlock(&mrc);
-        post(&rsem);
-        pthread_mutex_unlock(&z);
+        unlock_mut(&mrc);
+        post_sem(&rsem);
+        unlock_mut(&z);
 
         read_data();
 
-        pthread_mutex_lock(&mrc);
+        lock_mut(&mrc);
         read_count--;
 
         if (read_count == 0) {
-            post(&wsem);
+            post_sem(&wsem);
         }
-        pthread_mutex_unlock(&mrc);
+        unlock_mut(&mrc);
     }
 
     return (void* ) NULL;
@@ -69,27 +69,27 @@ void* writer() {
     int iter = 640 / nb_writers;
     for (int i = 0; i < iter; i++) {
         
-        pthread_mutex_lock(&mwc);
+        lock_mut(&mwc);
         // Critical section
 
         write_count++;
         if (write_count == 1) {
-            wait(&rsem);
+            wait_sem(&rsem);
         }
-        pthread_mutex_unlock(&mwc);
+        unlock_mut(&mwc);
 
-        wait(&wsem);
+        wait_sem(&wsem);
         write_data();
-        post(&wsem);
+        post_sem(&wsem);
 
-        pthread_mutex_lock(&mwc);
+        lock_mut(&mwc);
         // Critical section
 
         write_count--;
         if (write_count == 0) {
-            post(&rsem);
+            post_sem(&rsem);
         }
-        pthread_mutex_unlock(&mwc);
+        unlock_mut(&mwc);
 
     }
 
@@ -101,25 +101,25 @@ int main(int argc, const char* argv[]) {
     int err;    
     
     // read initialisation:
-    err = init(&rsem, 1);
+    err = init_sem(&rsem, 1);
     if (err != 0) return -1;
     
     read_count = 0;
     
-    err = pthread_mutex_init(&mrc, NULL); // mutex for read count
+    err = init_mut(&mrc); // mutex for read count
     if (err != 0) return -2;
     
     // write initialisation
-    err = init(&wsem, 1);
+    err = init_sem(&wsem, 1);
     if (err != 0) return -1;
     
     write_count = 0;
     
     
-    err = pthread_mutex_init(&mwc, NULL); // mutex for write count
+    err = init_mut(&mwc); // mutex for write count
     if (err != 0) return -2;
     
-    err = pthread_mutex_init(&z, NULL); 
+    err = init_mut(&z); 
     if (err != 0) return -2;
     
     if (argc != 3) {
@@ -182,20 +182,20 @@ int main(int argc, const char* argv[]) {
     free(writers);
 
     // destroy semaphores
-    err = destroy(&rsem);
+    err = destroy_sem(&rsem);
     if (err != 0) return -6;
 
-    err = destroy(&wsem);
+    err = destroy_sem(&wsem);
     if (err != 0) return -6;
 
     // destroy mutex
-    err = pthread_mutex_destroy(&mwc);
+    err = destroy_mut(&mwc);
     if (err != 0) return -7;
 
-    err = pthread_mutex_destroy(&mrc);
+    err = destroy_mut(&mrc);
     if (err != 0) return -7;
 
-    err = pthread_mutex_destroy(&z);
+    err = destroy_mut(&z);
     if (err != 0) return -7;
 
     return 0;

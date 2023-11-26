@@ -1,33 +1,62 @@
 #include "include/sem.h"
 
-int init(sem *s, int value) {
-    s->value = value;
-    pthread_mutex_init(&s->verrou, NULL);
+// mutex
+int init_mut(mut* m){
+    m->state = 0;
     return 0;
 }
 
-int wait(sem *s) {
+int lock_mut(mut* m){
+    int value = 1;
+    while (value == 1) {
+        __asm__(
+            "xchg %0, %1"
+            : "+r" (value), "+m" (m->state)
+        );
+        if (value == 1) usleep(100);
+    }; // value = 1 si state == 1 car occupé donc on reesaye jusqu'a obtention
+    
+    return 0;
+};
+
+int unlock_mut(mut* m){
+    m->state = 0;
+    return 0;
+};
+
+int destroy_mut(mut* m){
+    return 0;
+};
+
+// sem
+int init_sem(sem *s, int value) {
+    s->value = value;
+    init_mut(&s->verrou);
+    return 0;
+}
+
+int wait_sem(sem *s) {
     while (1) {
-        pthread_mutex_lock(&s->verrou);
+        lock_mut(&s->verrou);
         if (s->value > 0) {
             s->value--;
-            pthread_mutex_unlock(&s->verrou);
+            unlock_mut(&s->verrou);
             break;
         }
-        pthread_mutex_unlock(&s->verrou);
+        unlock_mut(&s->verrou);
         usleep(100);
     }
     return 0;
 }
 
-int post(sem *s) {
-    pthread_mutex_lock(&s->verrou);
+int post_sem(sem *s) {
+    lock_mut(&s->verrou);
     s->value++;
-    pthread_mutex_unlock(&s->verrou);
+    unlock_mut(&s->verrou);
     return 0;
 }
 
-int destroy(sem *s) {
-    pthread_mutex_destroy(&s->verrou);
+int destroy_sem(sem *s) {
+    destroy_mut(&s->verrou);
     return 0;
 }

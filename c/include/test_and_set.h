@@ -8,7 +8,11 @@
 
 // functions
 static inline void lock();
+
 static inline void unlock();
+
 void* travail(void* n);
+
 int main(int argc, const char* argv[]);
+
 #endif

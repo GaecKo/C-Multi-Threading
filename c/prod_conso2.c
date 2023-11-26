@@ -4,7 +4,7 @@
 #define N 8 // places dans le buffer
 
 int buffer[N];
-pthread_mutex_t mutex;
+mut mutex;
 sem empty;
 sem full;
 
@@ -44,12 +44,12 @@ void* producer(void* id) {
     int item;
     while (1) {
         item = randomInt();
-        wait(&empty);
-        pthread_mutex_lock(&mutex);
+        wait_sem(&empty);
+        lock_mut(&mutex);
 
         if (todo <= 0) {
-            pthread_mutex_unlock(&mutex);
-            post(&full);
+            unlock_mut(&mutex);
+            post_sem(&full);
             break;
         }
 
@@ -57,20 +57,20 @@ void* producer(void* id) {
         insert_item(item);
         todo--;
 
-        pthread_mutex_unlock(&mutex);
-        post(&full);
+        unlock_mut(&mutex);
+        post_sem(&full);
     }
     return NULL;
 }
 
 void* consumer(void* id) {
     while (1) {
-        wait(&full);
-        pthread_mutex_lock(&mutex);
+        wait_sem(&full);
+        lock_mut(&mutex);
 
         if (toeat <= 0) {
-            pthread_mutex_unlock(&mutex);
-            post(&empty);
+            unlock_mut(&mutex);
+            post_sem(&empty);
             break;
         }
 
@@ -78,16 +78,16 @@ void* consumer(void* id) {
         delete_item();
         toeat--;
 
-        pthread_mutex_unlock(&mutex);
-        post(&empty);
+        unlock_mut(&mutex);
+        post_sem(&empty);
     }
     return NULL;
 }
 
 int main(int argc, const char* argv[]) {  // argv[1] = nombre de prod, argv[2] = nombre de cons; 
-    pthread_mutex_init(&mutex, NULL);
-    init(&empty, N);
-    init(&full, 0);
+    init_mut(&mutex);
+    init_sem(&empty, N);
+    init_sem(&full, 0);
     int NP;
     int NC;
     if (argc == 3){
@@ -119,13 +119,13 @@ int main(int argc, const char* argv[]) {  // argv[1] = nombre de prod, argv[2] =
     }
 
     for (int i=0; i< NP; i++) {
-        err = pthread_join(prod[i], NULL);  // wait threads (philosopher)
+        err = pthread_join(prod[i], NULL);  // wait_sem threads (philosopher)
         if(err!=0) {
             printf("Error: %d\n", -4);
             return -4;
         }
 
-        err = pthread_join(cons[i], NULL);  // wait threads (philosopher)
+        err = pthread_join(cons[i], NULL);  // wait_sem threads (philosopher)
         if(err!=0) {
             printf("Error: %d\n", -5);
             return -5;
@@ -133,14 +133,14 @@ int main(int argc, const char* argv[]) {  // argv[1] = nombre de prod, argv[2] =
     }
 
 
-    err = pthread_mutex_destroy(&(mutex));
+    err = destroy_mut(&(mutex));
     if (err != 0) {
         printf("Error: %d\n", err);
         return -6;
     }
 
-    destroy(&full);
-    destroy(&empty);
+    destroy_sem(&full);
+    destroy_sem(&empty);
 
     free(prod);
     free(cons);

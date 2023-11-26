@@ -9,7 +9,9 @@
 
 // Functions
 void* philosopheNStartCycle(void* n);
+
 void mange(int id);
+
 int main(int argc, const char* argv[]);
 
 #endif 
