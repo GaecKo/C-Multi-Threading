@@ -7,20 +7,25 @@ int init_mut(mut* m){
 }
 
 int lock_mut(mut* m){
-    int value = 1;
-    while (value == 1) {
-        __asm__(
-            "xchg %0, %1"
-            : "+r" (value), "+m" (m->state)
-        );
-        if (value == 1) usleep(100);
-    }; // value = 1 si state == 1 car occupé donc on reesaye jusqu'a obtention
+    __asm__(
+        "movl $1, %%eax;" // variable = 1;
+        "enter:"
+            "xchgl %%eax, %0;" // exchange "variable" with "verrou"
+            "testl %%eax, %%eax;" // Test if "variable" = 0 
+            "jnz enter;"
+        : "=m" (m->state) // Output 
+        : //no input 
+        : "eax" // Clobbered register
+    );
     
     return 0;
 };
 
 int unlock_mut(mut* m){
-    m->state = 0;
+    __asm__(
+        "movl $0, %0"
+        :"=m" (m->state)
+    );
     return 0;
 };
 
