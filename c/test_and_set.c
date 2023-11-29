@@ -18,7 +18,6 @@ void lock() {
     );
 }
 
-
 void unlock() {
     __asm__(
         "movl $0, %0"
@@ -26,7 +25,7 @@ void unlock() {
     );
 }
 
-void* travail(void* n) { 
+void* travail() { 
 
     for(int i = 0; i < todo/nbrThreads; i++){
         lock();
@@ -45,11 +44,10 @@ int main(int argc, const char* argv[]) {
     else return -1;
 
     pthread_t* threads = (pthread_t *) malloc(nbrThreads * sizeof(pthread_t));
-    int* Id = (int *) malloc(nbrThreads * sizeof(int));
 
     for (size_t i = 0; i < nbrThreads; i++){
-        Id[i] = i;
-        err = pthread_create(&(threads[i]), NULL, &travail, &(Id[i]));  // init the threads
+
+        err = pthread_create(&(threads[i]), NULL, &travail, NULL);  // init the threads
         if(err!=0){
             printf("Error: %d", -3);
             return -3;
@@ -65,7 +63,6 @@ int main(int argc, const char* argv[]) {
     }
 
     free(threads);
-    free(Id);
 
     return 0;
 }
