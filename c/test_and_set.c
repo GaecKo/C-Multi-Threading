@@ -1,24 +1,31 @@
 #include "include/test_and_set.h"
 
 int nbrThreads;
-int verrou = 0;  // déverrouillé
 int todo = 64000;
 
-static inline void lock() {
-    int value = 1;
-    do {
-        __asm__(
-            "xchg %0, %1" // échange les valeurs de %0 et %1
-            : "+r" (value), "+m" (verrou)
-        );
-    } while (value == 1);
+int verrou = 0;  // déverrouillé
+
+void lock() {
+    __asm__(
+        "movl $1, %%eax;" // variable = 1;
+        "enter:"
+            "xchgl %%eax, %0;" // exchange "variable" with "verrou"
+            "testl %%eax, %%eax;" // Test if "variable" = 0 
+            "jnz enter;"
+        : "=m" (verrou) // Output 
+        : //no input 
+        : "eax" // Clobbered register
+    );
 }
 
-static inline void unlock() {
-    verrou = 0;
-    }
+void unlock() {
+    __asm__(
+        "movl $0, %0"
+        :"=m" (verrou)
+    );
+}
 
-void* travail(void* n) { 
+void* travail() { 
 
     for(int i = 0; i < todo/nbrThreads; i++){
         lock();
@@ -37,11 +44,10 @@ int main(int argc, const char* argv[]) {
     else return -1;
 
     pthread_t* threads = (pthread_t *) malloc(nbrThreads * sizeof(pthread_t));
-    int* Id = (int *) malloc(nbrThreads * sizeof(int));
 
     for (size_t i = 0; i < nbrThreads; i++){
-        Id[i] = i;
-        err = pthread_create(&(threads[i]), NULL, &travail, &(Id[i]));  // init the threads
+
+        err = pthread_create(&(threads[i]), NULL, &travail, NULL);  // init the threads
         if(err!=0){
             printf("Error: %d", -3);
             return -3;
@@ -57,7 +63,6 @@ int main(int argc, const char* argv[]) {
     }
 
     free(threads);
-    free(Id);
 
     return 0;
 }

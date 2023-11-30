@@ -9,7 +9,7 @@
 // functions
 bool test_and_set();
 
-void *travail();
+void *test_and_test_and_set();
 
 int main(int argc, const char* argv[]);
 

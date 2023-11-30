@@ -11,7 +11,7 @@ static inline void lock();
 
 static inline void unlock();
 
-void* travail(void* n);
+void* travail();
 
 int main(int argc, const char* argv[]);
 
