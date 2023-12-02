@@ -1,34 +1,50 @@
 # C-Multi-Threading
+Bienvenue sur notre projet P1. Voici quelques petites informations utiles en plus de ce qui est repris dans notre rapport. 
+
 
 ## Lancement du code
-Pour lancer le code, il faut simplement entrer `make`. Les trois fichiers `c` seront compilés en exécutables. Il suffit alors de les lancer avec `./c/filename` (les exécutables sont dans le dossier `c/`, on peut donc aussi faire `cd c/` puis `./filename`). 
+Pour lancer le code, il faut simplement entrer `make`. Les différents fichiers `c` seront compilés en exécutables. Il suffit alors de les lancer avec `./executables/filename`. 
+
+## Lancement des tests
+Afin de lancer les tests, il faut utiliser la commande `make test`. Celle-ci compilera automatiquement les fichiers et lancera les tests. Le résultat de ces tests seront enregistrés dans les fichiers `.csv` dans `data/`. 
+
+Vous pouvez aussi lancer directement le fichier `expermients.sh`, mais assurez vous d'avoir compilé les fichiers au préalable. 
+
+> **Notes**: Les résultats actuels dans `data/` sont ceux de la machine INGInious. Relancer les tests écraiserait donc ceux-ci et modifierait les graphes. 
+
+## Lancement des graphes
+Une fois les tests finis, ou si vous souhaitez afficher les résultats de la machine INGInious, il vous suffit de lancer les fichiers `analyser.py` et `analyser2.py`. 
+* `analyser.py` contient des `box plot`, donc 4 graphes avec toutes les données dessus
+* `analyser2.py` contient des `bar plot` et des `error bar` (8 graphes en tout), permettant plus facilement la comparaison de temps. 
+
 
 ## Organisation des fichiers
 ```
-|- Makefile     # make command
-|- experiments.sh    # data maker
-|- analyser.py  # graph maker
-|- README.md    # project explainer
-|- *.pdf        # project instruction
+|- Makefile         # make command
+|- experiments.sh   # data maker
+|- analyser.py      # graph maker
+|- analyser2.py     # graph maker
+|- README.md        # project explainer
+|- *.pdf            # project instruction
 |
-|c/  # c folder (programs)
+|c/             # c folder (programs)
 
     |- sem.c
     |- philosophe.c
     |- prod_conso.c
     |- lect_writer.c
-    |- philosophe2.c # using header/sem.h
-    |- prod_conso2.c # using header/sem.h
-    |- lect_writer2.c #using header/sem.h
-    |- includes/  # headers
+    |- philosophe2.c    # using header/sem.h
+    |- prod_conso2.c    # using header/sem.h
+    |- lect_writer2.c   #using header/sem.h
+    |- includes/        # headers
         |- sem.h
         |- philosophe.h
         |- prod_conso.h
         |- lect_writer.h
     |- build/
-        |- sem.o # compiled version of sem, when make is runned
+        |- sem.o        # compiled version of sem, when make is runned
 | 
-|data/  # csv folder (retrieved data)
+|data/          # csv folder (retrieved data)
     |- philosophe.csv
     |- prod_conso.csv
     |- lect_writer.csv
@@ -38,45 +54,10 @@ Pour lancer le code, il faut simplement entrer `make`. Les trois fichiers `c` se
     |- test_and_set.csv
     |- test_and_test_and_set.csv
 |
-|executables/ # completed when make run is runned
+|executables/   # completed when make run is runned
     |- philosophe
     |- ...
 |
 ```
 
-
-## Tâches
-#### (1.1) Problème des philosophes
-- Le nombre de philosophes N est un paramètre obtenu à partir de la ligne de commande ;
-- Chaque philosophe effectue 10,000,000 cycles penser/manger ;
-- On n’utilise pas d’attente dans les phases manger et penser (ces actions sont immédiates) pour mettre en avant le coût des opérations de synchronisation.
-
-#### (1.2) Problème des producteurs-consommateurs
-- Le nombre de threads consommateur et le nombre de threads producteurs sont deux paramètres obtenus à partir de la ligne de commande ;
-
-- Le buffer est un tableau partagé de 8 places, contenant des entiers (`int`) : 
-    - Une donnée produite ne doit jamais ‘écraser’ une donnée non consommée !
-    - On doit pouvoir produire des entiers sur l’ensemble de la plage `MIN_INT` à `MAX_INT`.
-
-- Entre chaque consommation ou production, un thread « simule » un traitement utilisant de la ressource CPU, en utilisant : `for (int i=0; i<10000; i++);`
-- Le nombre d’éléments produits (et donc consommé) est toujours de 8192.
-
-#### (1.3) Problème des lecteurs écrivains
-- Le nombre de threads écrivains et le nombre de threads lecteurs sont deux paramètres obtenus à partir de la ligne de commande ;
-- Un écrivain ou un lecteur « simule » un accès en écriture ou en lecture à la base de données avec la commande donnée ci-dessus, il n’y a pas d’attente entre deux tentatives d’accès ;
-- Le(s) écrivain(s) effectue(nt) 640 écritures et le(s) lecteur(s) effectue(nt) 2560 lectures.
-
-#### (1.4) Écrire un script d’évaluation des performances
-- Sur le modèle du précédent TD, mesurer la performance de chacun des trois programmes et la sauver dans des fichiers `.csv` en faisant attention à :
-    - Désactiver toute sortie sur `STDOUT` (car cela diminuerait les performances) ;
-    - Prendre 5 mesures pour chaque configuration avec les nombres de threads TOTAUX suivants: `[2, 4, 8, 16, 32, 64]`
-        - Pour les problèmes avec deux types distincts de threads, vous devez donc séparer ce nombre en 2 ensembles de threads de taille égale.
-
-
-#### (1.5) Représenter graphiquement les résultats
-
-- En utilisant matplotlib et un script python, représenter graphiquement le temps d’exécution en fonction du nombre de threads, en respectant les consignes suivantes :
-    - Les axes x et y doivent avoir des titres clairs ;
-    - Chaque mesure doit présenter la moyenne et l’écart type3 ;
-    - L’axe des y doit systématiquement commencer à 0.
 

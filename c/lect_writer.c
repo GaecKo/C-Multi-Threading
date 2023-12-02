@@ -33,26 +33,26 @@ void* reader() {
      int iter = 2560 / nb_readers;
 
     for (int i = 0; i < iter; i++) {
-        pthread_mutex_lock(&z);
+        pthread_mutex_lock(&z); 
         sem_wait(&rsem);
 
-        pthread_mutex_lock(&mrc);
+        pthread_mutex_lock(&mrc);       // lock for read_count var
         read_count++;
 
-        if (read_count == 1) {
+        if (read_count == 1) {          // bloquer les écrivaints
             sem_wait(&wsem);
         }
 
         pthread_mutex_unlock(&mrc);
-        sem_post(&rsem);
+        sem_post(&rsem);                
         pthread_mutex_unlock(&z);
 
-        read_data();
+        read_data();                    // section de travail
 
-        pthread_mutex_lock(&mrc);
+        pthread_mutex_lock(&mrc);       // lock pour read_count var
         read_count--;
 
-        if (read_count == 0) {
+        if (read_count == 0) {          // donner "l'accès" aux écrivaints
             sem_post(&wsem);
         }
         pthread_mutex_unlock(&mrc);
@@ -68,25 +68,23 @@ void* writer() {
     int iter = 640 / nb_writers;
     for (int i = 0; i < iter; i++) {
         
-        pthread_mutex_lock(&mwc);
-        // Critical section
+        pthread_mutex_lock(&mwc);       // lock pour write_count var
 
         write_count++;
-        if (write_count == 1) {
+        if (write_count == 1) {         // bloque les lecteurs
             sem_wait(&rsem);
         }
         pthread_mutex_unlock(&mwc);
 
         sem_wait(&wsem);
-        write_data();
+        write_data();                   // travail
         sem_post(&wsem);
 
-        pthread_mutex_lock(&mwc);
-        // Critical section
+        pthread_mutex_lock(&mwc);       // lock pour write_count var
 
         write_count--;
         if (write_count == 0) {
-            sem_post(&rsem);
+            sem_post(&rsem);            // donner "l'accès" aux lecteurs
         }
         pthread_mutex_unlock(&mwc);
 

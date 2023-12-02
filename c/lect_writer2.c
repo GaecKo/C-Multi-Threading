@@ -37,10 +37,10 @@ void* reader() {
         lock_mut(&z);
         wait_sem(&rsem);
 
-        lock_mut(&mrc);
+        lock_mut(&mrc);       // lock for read_count var
         read_count++;
 
-        if (read_count == 1) {
+        if (read_count == 1) {          // bloquer les écrivaints
             wait_sem(&wsem);
         }
 
@@ -48,12 +48,12 @@ void* reader() {
         post_sem(&rsem);
         unlock_mut(&z);
 
-        read_data();
+        read_data();                    // section de travail
 
         lock_mut(&mrc);
         read_count--;
 
-        if (read_count == 0) {
+        if (read_count == 0) {          // donner "l'accès" aux écrivaints
             post_sem(&wsem);
         }
         unlock_mut(&mrc);
@@ -69,25 +69,23 @@ void* writer() {
     int iter = 640 / nb_writers;
     for (int i = 0; i < iter; i++) {
         
-        lock_mut(&mwc);
-        // Critical section
+        lock_mut(&mwc);       // lock pour write_count var
 
         write_count++;
-        if (write_count == 1) {
+        if (write_count == 1) {         // bloque les lecteurs
             wait_sem(&rsem);
         }
         unlock_mut(&mwc);
 
         wait_sem(&wsem);
-        write_data();
+        write_data();                   // travail
         post_sem(&wsem);
 
-        lock_mut(&mwc);
-        // Critical section
+        lock_mut(&mwc);       // lock pour write_count var
 
         write_count--;
         if (write_count == 0) {
-            post_sem(&rsem);
+            post_sem(&rsem);            // donner "l'accès" aux lecteurs
         }
         unlock_mut(&mwc);
 

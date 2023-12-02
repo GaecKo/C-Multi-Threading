@@ -63,19 +63,6 @@ axis[0].grid(linestyle='--', alpha=0.5)
 axis[0].set_facecolor("lavender")
 
 
-
-# axis[1, 0].errorbar(["2", "4", "8", "16", "32", "64"], Ph_std_per_threads, yerr=Ph_std_per_threads, color = (0.8, 0.2, 0.2, 0.5))
-
-# axis[1, 0].errorbar(["2", "4", "8", "16", "32", "64"], Ph2_std_per_threads, yerr=Ph2_std_per_threads, color = (0, 0, 0, 0.4))
-
-# axis[1, 0].legend(["Using Default Sem", "Using our Sem"])
-# axis[1, 0].set_xlabel("Nombre de threads")
-# axis[1, 0].set_ylabel("Écart-Type", color = (0, 0, 0, 1))
-# axis[1, 0].grid(linestyle='--', alpha=0.5)
-
-# axis[1, 0].set_facecolor("lavender")
-
-
 # ==================================================================
 # ==================( 2. Prod-Conso Time Analysis )=================
 # ==================================================================
@@ -108,17 +95,6 @@ axis[1].grid(linestyle='--', alpha=0.5)
 
 axis[1].set_facecolor("lavender")
 
-
-# axis[1, 1].errorbar(["2", "4", "8", "16", "32", "64"], Pr_std_per_threads, yerr=Pr_std_per_threads, color = (0.8, 0.2, 0.2, 0.5))
-
-# axis[1, 1].errorbar(["2", "4", "8", "16", "32", "64"], Pr2_std_per_threads, yerr=Pr2_std_per_threads, color = (0, 0, 0, 0.4))
-
-# axis[1, 1].legend(["Using Default Sem", "Using our Sem"])
-# axis[1, 1].set_xlabel("Nombre de threads")
-# axis[1, 1].set_ylabel("Écart-Type", color = (0, 0, 0, 1))
-# axis[1, 1].grid(linestyle='--', alpha=0.5)
-
-# axis[1, 1].set_facecolor("lavender")
 
 # ==================================================================
 # ================( 3. Reader-Writer Time Analysis )================
@@ -153,18 +129,6 @@ axis[2].grid(linestyle='--', alpha=0.5)
 axis[2].set_facecolor("lavender")
 
 
-
-# axis[1, 2].errorbar(["2", "4", "8", "16", "32", "64"], Le_std_per_threads, yerr=Le_std_per_threads, color = (0.8, 0.2, 0.2, 0.5))
-
-# axis[1, 2].errorbar(["2", "4", "8", "16", "32", "64"], Le2_std_per_threads, yerr=Le2_std_per_threads, color = (0, 0, 0, 0.4))
-
-# axis[1, 2].legend(["Using Default Sem", "Using our Sem"])
-# axis[1, 2].set_xlabel("Nombre de threads")
-# axis[1, 2].set_ylabel("Écart-Type", color = (0, 0, 0, 1))
-# axis[1, 2].grid(linestyle='--', alpha=0.5)
-
-# axis[1, 2].set_facecolor("lavender")
-
 # ==================================================================
 # ================( 4. Test-and-Set Time Analysis )================
 # ==================================================================
@@ -197,18 +161,6 @@ axis[3].grid(linestyle='--', alpha=0.5)
 
 axis[3].set_facecolor("lavender")
 
-
-
-# axis[1, 3].errorbar(["2", "4", "8", "16", "32", "64"], T_s_std_per_threads, yerr=T_s_std_per_threads, color = (0.8, 0.2, 0.2, 0.5))
-
-# axis[1, 3].errorbar(["2", "4", "8", "16", "32", "64"], T_T_s_std_per_threads, yerr=T_T_s_std_per_threads, color = (0, 0, 0, 0.4))
-
-# axis[1, 3].legend(["Test-and-Set", "Test-and-Test-and-Set"])
-# axis[1, 3].set_xlabel("Nombre de threads")
-# axis[1, 3].set_ylabel("Écart-Type", color = (0, 0, 0, 1))
-# axis[1, 3].grid(linestyle='--', alpha=0.5)
-
-# axis[1, 3].set_facecolor("lavender")
 
 # ==================================================================
 # ===================( 4. Ploting Settings )========================
